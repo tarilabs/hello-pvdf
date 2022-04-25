@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hello-pvdf
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hello-pvdf
+      app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  serviceName: hello-pvdf
+  template:
+    spec:
+      containers:
+      - name: hello-pvdf
+      terminationGracePeriodSeconds: 10
+  volumeClaimTemplates:
+  - metadata:
+      name: my-pvc-claim
+      namespace: default
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Mi
+      storageClassName: standard # assumed default storage class for local minikube tests, but beaware of which applies to hostpath (including default storage class for minikube) https://kubernetes.io/docs/concepts/storage/volumes/#:~:text=There%20is%20no%20limit%20on%20how%20much%20space%20an%20emptyDir%20or%20hostPath%20volume%20can%20consume%2C%20and%20no%20isolation%20between%20containers%20or%20between%20pods.
